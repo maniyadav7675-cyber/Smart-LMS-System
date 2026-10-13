@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title th:text="${pageTitle} + ' — Smart LMS'">Course Form — Smart LMS</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+          rel="stylesheet"/>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+          rel="stylesheet"/>
+    <link th:href="@{/css/style.css}" rel="stylesheet"/>
+</head>
+<body>
+
+<!-- Navbar -->
+<div th:replace="~{fragments/layout :: navbar}"></div>
+
+<div class="container">
+
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">
+                        <i class="bi bi-book me-2"></i>
+                        <span th:text="${pageTitle}">Course Form</span>
+                    </h4>
+                </div>
+                <div class="card-body">
+
+                    <form th:action="@{/courses/save}" th:object="${course}"
+                          method="post" enctype="multipart/form-data" novalidate>
+
+                        <!-- Hidden ID for edit mode -->
+                        <input type="hidden" th:field="*{id}"/>
+                        <!-- Preserve timestamps -->
+                        <input type="hidden" th:field="*{createdAt}"/>
+                        <input type="hidden" th:field="*{updatedAt}"/>
+
+                        <!-- Course Name -->
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Course Name <span class="text-danger">*</span></label>
+                            <input type="text" id="name" th:field="*{name}"
+                                   class="form-control"
+                                   th:classappend="${#fields.hasErrors('name')} ? 'is-invalid'"
+                                   placeholder="e.g. Core Java"/>
+                            <div class="invalid-feedback" th:each="err : ${#fields.errors('name')}"
+                                 th:text="${err}"></div>
+                        </div>
+
+                        <!-- Course Code -->
+                        <div class="mb-3">
+                            <label for="code" class="form-label">Course Code <span class="text-danger">*</span></label>
+                            <input type="text" id="code" th:field="*{code}"
+                                   class="form-control"
+                                   th:classappend="${#fields.hasErrors('code')} ? 'is-invalid'"
+                                   placeholder="e.g. JAVA101"/>
+                            <div class="invalid-feedback" th:each="err : ${#fields.errors('code')}"
+                                 th:text="${err}"></div>
+                        </div>
+
+                        <!-- Description -->
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Description</label>
+                            <textarea id="description" th:field="*{description}"
+                                      class="form-control" rows="3"
+                                      th:classappend="${#fields.hasErrors('description')} ? 'is-invalid'"
+                                      placeholder="Brief description of the course…"></textarea>
+                            <div class="invalid-feedback" th:each="err : ${#fields.errors('description')}"
+                                 th:text="${err}"></div>
+                        </div>
+
+                        <!-- Dates -->
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="startDate" class="form-label">Start Date <span class="text-danger">*</span></label>
+                                <input type="date" id="startDate" th:field="*{startDate}"
+                                       class="form-control"
+                                       th:classappend="${#fields.hasErrors('startDate')} ? 'is-invalid'"/>
+                                <div class="invalid-feedback" th:each="err : ${#fields.errors('startDate')}"
+                                     th:text="${err}"></div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="endDate" class="form-label">End Date <span class="text-danger">*</span></label>
+                                <input type="date" id="endDate" th:field="*{endDate}"
+                                       class="form-control"
+                                       th:classappend="${#fields.hasErrors('endDate')} ? 'is-invalid'"/>
+                                <div class="invalid-feedback" th:each="err : ${#fields.errors('endDate')}"
+                                     th:text="${err}"></div>
+                            </div>
+                        </div>
+
+                        <!-- Image Upload -->
+                        <div class="mb-3">
+                            <label for="imageFile" class="form-label">Course Image</label>
+                            <input type="file" id="imageFile" name="imageFile"
+                                   class="form-control" accept="image/*"/>
+                            <div class="form-text">Max 5 MB. JPG, PNG or GIF.</div>
+
+                            <!-- Preview existing image in edit mode -->
+                            <div th:if="${course.imagePath != null}" class="mt-2">
+                                <img th:src="@{'/uploads/' + ${course.imagePath}}"
+                                     alt="Current image" class="rounded border"
+                                     width="120" height="120"
+                                     style="object-fit: cover;"/>
+                                <small class="d-block text-muted mt-1">Current image — upload a new file to replace it.</small>
+                            </div>
+                        </div>
+
+                        <!-- Buttons -->
+                        <div class="d-flex justify-content-between">
+                            <a th:href="@{/courses}" class="btn btn-secondary">
+                                <i class="bi bi-arrow-left me-1"></i>Cancel
+                            </a>
+                            <button type="submit" class="btn btn-success">
+                                <i class="bi bi-check-lg me-1"></i>Save Course
+                            </button>
+                        </div>
+
+                    </form>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
